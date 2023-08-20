@@ -23,6 +23,9 @@ const UserSchema = new mongoose.Schema(
             type: String, // TODO Will use bcrypt to hash password later
             required: [true, 'Please provide password'],
         },
+        refreshToken: {
+            type: String,
+        },
         avatar: {
             type: String, // url image
             default: 'https://i.pravatar.cc/300',

@@ -1,11 +1,5 @@
 const User = require('../models/User');
 
-const createUser = async (req, res, next) => {
-    const user = await User.create(req.body);
-    if (!user) return next(new Error('User not created'));
-    res.status(201).json({ user });
-};
-
 const getAllUsers = async (req, res) => {
     const users = await User.find({});
     if (!users) return next(new Error('No users found'));
@@ -27,7 +21,6 @@ const updateUserInfo = async (req, res) => {
 };
 
 module.exports = {
-    createUser,
     getAllUsers,
     getUserInfo,
     updateUserInfo,
