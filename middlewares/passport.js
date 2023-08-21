@@ -15,9 +15,9 @@ passport.use(
     new JwtStrategy(options, async (req, payload, done) => {
         const user = await User.findById(payload.id);
         if (!user) {
-            return done(new Error('Unauthorized!'), null);
+            return done(new Error('Unauthenticated!'), null);
         }
-        return done(null, { id: user._id, username: user.username });
+        return done(null, { id: user._id, username: user.username, role: user.role });
     }),
 );
 

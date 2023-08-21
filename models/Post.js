@@ -12,7 +12,7 @@ const PostSchema = new mongoose.Schema(
         },
         subject: {
             type: String,
-            required: [true, 'Please provide subject'],
+            default: 'Other',
         },
         author: {
             type: mongoose.Schema.Types.ObjectId,
@@ -22,7 +22,6 @@ const PostSchema = new mongoose.Schema(
         participants: {
             type: [mongoose.Schema.Types.ObjectId],
             ref: 'User',
-            default: [this.author],
         },
         address: {
             type: String,

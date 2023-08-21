@@ -26,6 +26,10 @@ const UserSchema = new mongoose.Schema(
         refreshToken: {
             type: String,
         },
+        role: {
+            type: String,
+            default: 'user',
+        },
         avatar: {
             type: String, // url image
             default: 'https://i.pravatar.cc/300',
