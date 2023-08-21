@@ -2,6 +2,8 @@ const Post = require('../models/Post');
 
 const createPost = async (req, res, next) => {
     const createdPost = req.body;
+    const author = req.user.id.toString();
+    createdPost.author = author;
     const post = await Post.create(createdPost);
     if (!post) {
         return next(new Error('Something went wrong - Failed to create post'));

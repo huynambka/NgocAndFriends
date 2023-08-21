@@ -25,24 +25,25 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
     const { username, password } = req.body;
     // TODO: Validate user input
-    const user = await User.findOne({ username: username });
-    if (!user) {
+    const existedUser = await User.findOne({ username: username });
+    if (!existedUser) {
         return next(new Error('Username does not exist!'));
     }
-    const matchPassword = await bcrypt.compare(password, user.password);
+    const matchPassword = await bcrypt.compare(password, existedUser.password);
     if (!matchPassword) {
         return next(new Error('Wrong password!'));
     }
 
-    const refreshToken = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    user = await User.findByIdAndUpdate(user._id, { refreshToken: refreshToken });
+    const refreshToken = jwt.sign({ id: existedUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const user = await User.findByIdAndUpdate(existedUser._id, { refreshToken: refreshToken });
 
-    const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: '30m',
     });
     user.password = undefined;
     res.status(200).json({ message: 'User logged in!', token: token, refreshToken: refreshToken, user: user });
 };
+// TODO: Refresh token
 module.exports = {
     register,
     login,

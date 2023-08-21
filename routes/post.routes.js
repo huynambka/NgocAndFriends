@@ -1,9 +1,12 @@
 const express = require('express');
+const passport = require('passport');
 const router = express.Router();
 
 const postControllers = require('../controllers/post.controller');
 
-router.post('/create', postControllers.createPost);
+const passportJWT = passport.authenticate('jwt', { session: false }, null);
+
+router.post('/create', passportJWT, postControllers.createPost);
 router.get('/all', postControllers.getAllPosts);
 router.get('/', (req, res) => {
     res.send('Post route');

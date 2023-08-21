@@ -1,16 +1,17 @@
 require('express-async-errors');
 require('dotenv').config();
 const express = require('express');
-const passport = require('passport');
 const app = express();
 const port = 3000;
 
 const router = require('./routes');
 
 app.use(express.json());
-app.use(passport.initialize());
 
+const passport = require('./middlewares/passport');
 const errorHandler = require('./middlewares/errorHandler');
+
+app.use(passport.initialize());
 
 app.use('/api/v1/user', router.userRoutes);
 app.use('/api/v1/post', router.postRoutes);
