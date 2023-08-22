@@ -12,7 +12,6 @@ const createPost = async (req, res, next) => {
     res.status(201).json({ post });
 };
 const getAllPosts = async (req, res, next) => {
-    // TODO - Pagination
     const { page = 1, limit = 5 } = req.query;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;

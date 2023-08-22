@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema(
             type: String,
         },
         password: {
-            type: String, // TODO Will use bcrypt to hash password later
+            type: String,
             required: [true, 'Please provide password'],
         },
         refreshToken: {

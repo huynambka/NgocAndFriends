@@ -38,13 +38,27 @@ const login = async (req, res, next) => {
     const user = await User.findByIdAndUpdate(existedUser._id, { refreshToken: refreshToken });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: '30m',
+        expiresIn: process.env.TOKEN_LIFETIME.toString(),
     });
     user.password = undefined;
-    res.status(200).json({ message: 'User logged in!', token: token, refreshToken: refreshToken, user: user });
+    res.status(200).json({ message: 'User logged in!', token: token, refreshToken: refreshToken, userId: user._id });
 };
 // TODO: Refresh token
+const refreshToken = async (req, res, next) => {
+    const refreshToken = req.body.refreshToken;
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    if (!decoded) {
+        return next(new Error('Invalid refresh token'));
+    }
+    if (Date.now() >= decoded.exp * 1000) {
+        return next(new Error('Refresh token expired'));
+    }
+    const userId = decoded.id;
+    const newToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: process.env.TOKEN_LIFETIME });
+    res.status(200).json({ message: 'Refresh token success', token: newToken });
+};
 module.exports = {
     register,
     login,
+    refreshToken,
 };
