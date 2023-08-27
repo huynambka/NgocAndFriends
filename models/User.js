@@ -26,6 +26,18 @@ const UserSchema = new mongoose.Schema(
         refreshToken: {
             type: String,
         },
+        socketId: {
+            type: String,
+        },
+        groupIds: {
+            type: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'GroupChat',
+                },
+            ],
+            default: [],
+        },
         role: {
             type: String,
             default: 'user',

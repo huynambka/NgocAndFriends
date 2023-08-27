@@ -56,7 +56,9 @@ const deletePost = async (req, res, next) => {
         return next(new Error('You are not authorized to delete this post'));
     }
     const deletedPost = await Post.findByIdAndDelete(postId);
-    res.status(200).json({ message: 'Deleted post with id: ' + deletePost._id });
+    res.status(200).json({
+        message: 'Deleted post with id: ' + deletePost._id,
+    });
 };
 const updatePost = async (req, res, next) => {
     const { postId, content, title, subject } = req.body;
@@ -68,7 +70,11 @@ const updatePost = async (req, res, next) => {
     if (post.author !== userId && req.user.role !== 'admin') {
         return next(new Error('You are not authorized to update this post'));
     }
-    const updatedPost = await Post.findByIdAndUpdate({ _id: postId }, { content, title, subject }, { new: true });
+    const updatedPost = await Post.findByIdAndUpdate(
+        { _id: postId },
+        { content, title, subject },
+        { new: true },
+    );
     res.status(200).json({ message: 'Updated!', updatedPost });
 };
 module.exports = {

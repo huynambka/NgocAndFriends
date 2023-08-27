@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatting with Shiba</title>
+</head>
+
+<body>
+    <h1>Chatting with Shiba</h1>
+    <h2 id="group-chat"></h2>
+    <ul id="message"></ul>
+    <form action="" id="chat-form" style="padding: 10px">
+        <input type="text" id="chat-mes">
+        <button id="send-chat">Send Message</button>
+    </form>
+    <!-- <form action="" id="group" style="padding: 10px">
+        <input type="text" id="group-name">
+        <button id="create-group">Create new group</button>
+    </form> -->
+    <!-- <form action="" id="join-group" style="padding: 10px">
+        <select name="" id="group-id">
+            <option value="" selected disabled>Select a group</option>
+            <option value="64e8b976eea02dab65cc1e45">Shiba</option>
+            <option value="64e8bf2c41ead64c24fc2516">Shiba 2</option>
+        </select>
+        <button id="join">Join</button>
+    </form> -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.js"></script>
+    <script>
+        const createGroup = document.getElementById('group');
+    </script>
+</body>
+
+</html>

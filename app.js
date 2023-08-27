@@ -1,12 +1,24 @@
 require('express-async-errors');
 require('dotenv').config();
 const express = require('express');
+const { Server } = require('socket.io');
+const http = require('http');
+
 const app = express();
-const port = 3000;
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: '*', // In production, change this to production URL
+        methods: ['GET', 'POST'],
+    },
+});
 
 const router = require('./routes');
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 const passport = require('./middlewares/passport');
 const errorHandler = require('./middlewares/errorHandler');
@@ -16,8 +28,10 @@ app.use(passport.initialize());
 app.use('/api/v1/user', router.userRoutes);
 app.use('/api/v1/post', router.postRoutes);
 app.use('/api/v1/auth', router.authRoutes);
+app.use('/api/v1/group-chat', router.groupChatRoutes);
 
-app.get('/', (req, res) => res.send('YOUR CREWWWW!'));
+const socketHandler = require('./socket/socketHandler');
+socketHandler(io);
 
 app.use(errorHandler);
 
@@ -25,7 +39,10 @@ const connectDB = require('./db/connect');
 const start = async () => {
     try {
         await connectDB(process.env.MONGO_URI);
-        app.listen(port, console.log(`Server is listening on port ${port}...`));
+        server.listen(
+            process.env.PORT,
+            console.log(`Server is listening on port ${process.env.PORT}...`),
+        );
     } catch (error) {
         console.log(error);
     }
