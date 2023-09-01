@@ -126,7 +126,9 @@
                 .then(data => {
                     if (data.message === 'User logged in!') {
                         window.location.href = 'http://localhost:3000';
-                        window.localStorage.setItem('token', data.token);
+                        window.sessionStorage.setItem('token', data.token);
+                        window.sessionStorage.setItem('username', data.username);
+
                     } else {
                         alert('Login failed');
                     }

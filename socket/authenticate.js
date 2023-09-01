@@ -5,11 +5,13 @@ const authenticate = async (token) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         return decoded;
     } catch (error) {
-        if (error.message === 'jwt expired') {
-            return { error: 'jwt expired' };
-        } else {
-            throw error;
+        if (error instanceof jwt.TokenExpiredError) {
+            return { error: 'Token expired' };
         }
+        if (error instanceof jwt.JsonWebTokenError) {
+            return { error: 'Invalid token' };
+        }
+        throw error;
     }
 };
 

@@ -18,12 +18,20 @@ const GroupChatSchema = new mongoose.Schema(
         messages: {
             type: [
                 {
-                    message: {
+                    content: {
                         type: String,
                     },
                     sender: {
                         type: mongoose.Schema.Types.ObjectId,
                         ref: 'User',
+                    },
+                    image: {
+                        base64: {
+                            type: String,
+                        },
+                        type: {
+                            type: String,
+                        },
                     },
                     timeSend: {
                         type: Date,

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Chatting with Shiba</title>
+</head>
+
+<body>
+    <div class="center">
+        <div class="contacts">
+            <i class="fas fa-bars fa-2x"></i>
+            <h2>
+                Contacts
+            </h2>
+
+        </div>
+        <div class="chat">
+            <div class="contact bar">
+                <div class="pic"></div>
+                <div class="name">
+                </div>
+                <div class="seen">
+                    Today at 12:56
+                </div>
+            </div>
+            <div class="messages" id="chat">
+                <!-- <div class="time">
+                    Today at 11:41
+                </div> -->
+                <!-- <div class="message stark">
+                    <div class="typing typing-1"></div>
+                    <div class="typing typing-2"></div>
+                    <div class="typing typing-3"></div>
+                </div> -->
+            </div>
+            <div class="input">
+                <i class="fas fa-camera" id="image-button"><input type="file" id="image-input"
+                        style="display: none;"></i><i class="far fa-laugh-beam"></i><input id="mes-input"
+                    placeholder="Type your message here!" type="text" onkeydown="sendMessage(event)" /><i
+                    class="fas fa-microphone"></i>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="script.js"></script>
+    <script src="/socket.js"></script>
+    <script>
+    </script>
+</body>
+
+</html>

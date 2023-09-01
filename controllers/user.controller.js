@@ -6,15 +6,22 @@ const User = require('../models/User');
 //     if (!users) return next(new Error('No users found'));
 //     res.status(200).json({ count: users.length, users: users });
 // };
-
+// TODO: Fix this function
 const getUserInfo = async (req, res, next) => {
     const username = req.body.username;
     const userId = req.user.id;
     const user = await User.findOne({ username });
     if (!user) next(new Error('User not found'));
     user.password = undefined;
-    if (user._id.toString() !== userId.toString() && req.user.role !== 'admin') {
-        res.status(200).json({ username: user.username, name: user.name, social: user.social });
+    if (
+        user._id.toString() !== userId.toString() &&
+        req.user.role !== 'admin'
+    ) {
+        res.status(200).json({
+            username: user.username,
+            name: user.name,
+            social: user.social,
+        });
     } else {
         res.status(200).json({ user });
     }
@@ -27,10 +34,15 @@ const updateUserInfo = async (req, res, next) => {
     const userId = req.user.id;
     const user = await User.findOne({ username: bodyUser.username });
     if (!user) return next(new Error('User not found'));
-    if (user._id.toString() !== userId.toString() && req.user.role !== 'admin') {
+    if (
+        user._id.toString() !== userId.toString() &&
+        req.user.role !== 'admin'
+    ) {
         return next(new Error('You are not allowed to edit this user'));
     }
-    const updatedUser = await User.findOneAndUpdate({}, bodyUser, { new: true });
+    const updatedUser = await User.findOneAndUpdate({}, bodyUser, {
+        new: true,
+    });
     res.status(200).json({ updatedUser });
 };
 

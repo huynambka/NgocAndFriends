@@ -40,6 +40,10 @@ const getMessages = async (req, res, next) => {
     const { limit = 30, page = 1 } = req.body;
     const startIndex = (page - 1) * limit;
 
+    const user = await User.findById(req.user.id).select('groupIds');
+    if (!user.groupIds.includes(groupId)) {
+        return next(new Error('You are not a member of this group'));
+    }
     const { messages } = await GroupChat.findById(groupId)
         .select('messages')
         .skip(startIndex)
@@ -48,7 +52,7 @@ const getMessages = async (req, res, next) => {
     if (!messages) {
         return next(new Error('Something went wrong while getting messages'));
     }
-    res.status(200).json({ success: true, data: messages });
+    res.status(200).json({ success: true, messages: messages });
 };
 
 const newMessage = async (req, res, next) => {

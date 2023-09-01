@@ -30,6 +30,17 @@ app.use('/api/v1/post', router.postRoutes);
 app.use('/api/v1/auth', router.authRoutes);
 app.use('/api/v1/group-chat', router.groupChatRoutes);
 
+app.get('/chat', (req, res) => {
+    res.sendFile(__dirname + '/public/chat.html');
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(__dirname + '/public/login.html');
+});
+
+app.get('/', (req, res) => {
+    res.redirect('/chat');
+});
 const socketHandler = require('./socket/socketHandler');
 socketHandler(io);
 
