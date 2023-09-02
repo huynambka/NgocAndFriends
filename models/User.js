@@ -23,7 +23,16 @@ const UserSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Please provide password'],
         },
-        refreshToken: {
+        rate: {
+            type: Number,
+        },
+        groups: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Group',
+            },
+        ],
+        refresh_token: {
             type: String,
         },
         role: {
