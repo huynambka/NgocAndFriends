@@ -19,6 +19,7 @@ const createPost = async (req, res, next) => {
         { group: group._id },
         { new: true },
     );
+    await User.findByIdAndUpdate(author, { $push: { groups: group._id } });
     res.status(201).json({ post, group });
 };
 const getAllPosts = async (req, res, next) => {
@@ -67,7 +68,10 @@ const deletePost = async (req, res, next) => {
         return next(new Error('You are not authorized to delete this post'));
     }
     const deletedPost = await Post.findByIdAndDelete(postId);
-    await Group.findByIdAndDelete(groupId);
+    const group = await Group.findByIdAndDelete(groupId);
+    group.members.forEach(async (member) => {
+        await User.findByIdAndUpdate(member, { $pull: { groups: groupId } });
+    });
     res.status(200).json({
         message: 'Deleted post with id: ' + deletedPost._id,
     });

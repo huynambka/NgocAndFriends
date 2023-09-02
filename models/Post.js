@@ -35,7 +35,7 @@ const PostSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            default: 'Open',
+            default: 'open',
         },
     },
     {
