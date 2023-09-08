@@ -1,6 +1,6 @@
 const Group = require('../models/Group');
 const User = require('../models/User');
-
+const { StatusCodes } = require('http-status-codes');
 // const getAllUsers = async (req, res) => {
 //     // TODO: Pagination
 //     const users = await User.find({});
@@ -18,13 +18,23 @@ const getUserInfo = async (req, res, next) => {
         user._id.toString() !== userId.toString() &&
         req.user.role !== 'admin'
     ) {
-        res.status(200).json({
-            username: user.username,
-            name: user.name,
-            social: user.social,
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Get user info successfully',
+            data: {
+                user: {
+                    username: user.username,
+                    name: user.name,
+                    social: user.social,
+                },
+            },
         });
     } else {
-        res.status(200).json({ user });
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Get user info successfully',
+            data: { user },
+        });
     }
 };
 const updateUserInfo = async (req, res, next) => {
@@ -44,7 +54,11 @@ const updateUserInfo = async (req, res, next) => {
     const updatedUser = await User.findOneAndUpdate({}, bodyUser, {
         new: true,
     });
-    res.status(200).json({ updatedUser });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'Update user info successfully',
+        data: { updatedUser },
+    });
 };
 const ratingUser = async (req, res, next) => {
     const { userId, groupId, rating } = req.body;
@@ -70,7 +84,10 @@ const ratingUser = async (req, res, next) => {
         count: count + 1,
     };
     await user.updateOne({ $set: { rate: newRate } });
-    res.status(200).json({ message: 'Rating success' });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'Rating successfully',
+    });
 };
 module.exports = {
     // getAllUsers,

@@ -63,7 +63,7 @@ const UserSchema = new mongoose.Schema(
             type: String,
         },
         social: {
-            type: [String],
+            type: [String], //TODO: Change type from Array of String to Object
         },
     },
     { timestamps: true },

@@ -1,6 +1,7 @@
 const Post = require('../models/Post');
 const Group = require('../models/Group');
 const User = require('../models/User');
+const { StatusCodes } = require('http-status-codes');
 const createPost = async (req, res, next) => {
     const createPost = req.body;
     // TODO: Validate user input
@@ -20,7 +21,11 @@ const createPost = async (req, res, next) => {
         { new: true },
     );
     await User.findByIdAndUpdate(author, { $push: { groups: group._id } });
-    res.status(201).json({ post, group });
+    res.status(StatusCodes.CREATED).json({
+        success: true,
+        message: 'Create post successfully',
+        data: { post, group },
+    });
 };
 const getAllPosts = async (req, res, next) => {
     const { page = 1, limit = 5 } = req.query;
@@ -54,7 +59,11 @@ const getAllPosts = async (req, res, next) => {
     if (!posts) {
         return next(new Error('Something went wrong - Failed to get posts'));
     }
-    res.status(200).json({ totalPost, posts });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'Get posts successfully',
+        data: { totalPost, posts },
+    });
 };
 const deletePost = async (req, res, next) => {
     const { postId } = req.body;
@@ -72,8 +81,9 @@ const deletePost = async (req, res, next) => {
     group.members.forEach(async (member) => {
         await User.findByIdAndUpdate(member, { $pull: { groups: groupId } });
     });
-    res.status(200).json({
-        message: 'Deleted post with id: ' + deletedPost._id,
+    res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'Deleted post successfully',
     });
 };
 const updatePost = async (req, res, next) => {
@@ -91,7 +101,11 @@ const updatePost = async (req, res, next) => {
         { content, title, subject, status },
         { new: true },
     );
-    res.status(200).json({ message: 'Updated!', updatedPost });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'Update post successfully',
+        data: { updatedPost },
+    });
 };
 
 const joinGroup = async (req, res, next) => {
@@ -115,7 +129,10 @@ const joinGroup = async (req, res, next) => {
     } else {
         return next(new Error('Group is full'));
     }
-    res.status(200).json({ message: 'Joined!' });
+    res.status(StatusCodes.ACCEPTED).json({
+        success: true,
+        message: 'Join group successfully',
+    });
 };
 
 module.exports = {
