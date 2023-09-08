@@ -24,7 +24,14 @@ const UserSchema = new mongoose.Schema(
             required: [true, 'Please provide password'],
         },
         rate: {
-            type: Number,
+            point: {
+                type: Number,
+                default: 0.0,
+            },
+            count: {
+                type: Number,
+                default: 0,
+            },
         },
         groups: [
             {
