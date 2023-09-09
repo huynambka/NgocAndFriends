@@ -33,8 +33,10 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     const { username, password } = req.body;
+    console.log(username, password);
     // TODO: Validate user input
     const existedUser = await User.findOne({ username: username });
+    console.log(existedUser);
     if (!existedUser) {
         return next(new Error('Username does not exist!'));
     }

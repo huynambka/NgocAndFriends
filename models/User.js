@@ -39,6 +39,12 @@ const UserSchema = new mongoose.Schema(
                 ref: 'Group',
             },
         ],
+        seenMessages: [
+            {
+                type: Map,
+                of: String,
+            },
+        ],
         refresh_token: {
             type: String,
         },

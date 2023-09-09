@@ -1,43 +1,28 @@
 const mongoose = require('mongoose');
 
-const GroupSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        default: 'Group',
-    },
-    members: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+const GroupSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            default: 'Group',
         },
-    ],
-    post: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
-    },
-    avatar: {
-        type: String,
-        default: 'https://i.pravatar.cc/300',
-    },
-    messages: [
-        {
-            sender: {
+        members: [
+            {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User',
             },
-            content: {
-                type: String,
-            },
-            image: {
-                type: String,
-            },
-            date: {
-                type: Date,
-                default: Date.now(),
-            },
+        ],
+        post: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Post',
         },
-    ],
-});
+        avatar: {
+            type: String,
+            default: 'https://i.pravatar.cc/300',
+        },
+    },
+    { timestamps: true },
+);
 
 const Group = mongoose.model('Group', GroupSchema);
 

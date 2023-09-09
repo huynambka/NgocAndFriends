@@ -17,6 +17,11 @@ const socketHandler = (io) => {
             return;
         }
         const userId = decoded.id;
+        const user = await User.findById(userId);
+        const groups = user.groups;
+        groups.forEach((group) => {
+            socket.join(group);
+        });
 
         onChatHandler(socket, chatNamespace, userId);
 
