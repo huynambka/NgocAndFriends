@@ -1,8 +1,8 @@
 const userRoutes = require('./user.routes');
-const postRoutes = require('./post.routes');
+const groupRoutes = require('./group.routes');
 const authRoutes = require('./auth.routes');
 module.exports = {
     userRoutes,
-    postRoutes,
+    groupRoutes,
     authRoutes,
 };

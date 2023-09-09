@@ -26,7 +26,7 @@ const errorHandler = require('./middlewares/errorHandler');
 app.use(passport.initialize());
 
 app.use('/api/v1/user', router.userRoutes);
-app.use('/api/v1/post', router.postRoutes);
+app.use('/api/v1/group', router.groupRoutes);
 app.use('/api/v1/auth', router.authRoutes);
 
 app.get('/chat', (req, res) => {

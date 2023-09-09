@@ -2,9 +2,30 @@ const mongoose = require('mongoose');
 
 const GroupSchema = new mongoose.Schema(
     {
-        name: {
+        title: {
             type: String,
-            default: 'Group',
+            required: [true, 'Please provide title'],
+        },
+        description: {
+            type: String,
+            required: [true, 'Please provide description'],
+        },
+        avatar: {
+            type: String,
+            default: 'https://i.pravatar.cc/300',
+        },
+        subject: {
+            type: String,
+            default: 'Other',
+        },
+        leader: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: [true, 'Please provide author'],
+        },
+        max_participants: {
+            type: Number,
+            default: 5,
         },
         members: [
             {
@@ -12,13 +33,15 @@ const GroupSchema = new mongoose.Schema(
                 ref: 'User',
             },
         ],
-        post: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Post',
+        meetingTime: {
+            type: { start: Date, end: Date },
+            required: [true, 'Please provide meeting time'],
         },
-        avatar: {
-            type: String,
-            default: 'https://i.pravatar.cc/300',
+        address: {
+            detail: String,
+            ward: String,
+            district: String,
+            province: String,
         },
     },
     { timestamps: true },
