@@ -108,7 +108,7 @@ const updatePost = async (req, res, next) => {
     });
 };
 
-const joinGroup = async (req, res, next) => {
+const join = async (req, res, next) => {
     const { postId } = req.body;
     const userId = req.user.id;
     const post = await Post.findById(postId);
@@ -140,5 +140,5 @@ module.exports = {
     getAllPosts,
     deletePost,
     updatePost,
-    joinGroup,
+    join,
 };

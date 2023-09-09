@@ -27,15 +27,20 @@ const PostSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Group',
         },
-        address: {
-            type: String,
+        meetingTime: {
+            type: { start: Date, end: Date },
+            required: [true, 'Please provide meeting time'],
         },
-        date: {
-            type: Date,
+        address: {
+            detail: String,
+            ward: String,
+            district: String,
+            province: String,
         },
         status: {
             type: String,
             default: 'open',
+            enum: ['open', 'closed'],
         },
     },
     {

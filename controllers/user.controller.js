@@ -1,12 +1,6 @@
 const Group = require('../models/Group');
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
-// const getAllUsers = async (req, res) => {
-//     // TODO: Pagination
-//     const users = await User.find({});
-//     if (!users) return next(new Error('No users found'));
-//     res.status(200).json({ count: users.length, users: users });
-// };
 
 const getUserInfo = async (req, res, next) => {
     const username = req.body.username;
@@ -38,12 +32,11 @@ const getUserInfo = async (req, res, next) => {
     }
 };
 const updateUserInfo = async (req, res, next) => {
-    const bodyUser = { ...req.body };
-    if (bodyUser.password) {
-        return next(new Error('You are not allowed to edit password'));
-    }
+    const userData = { ...req.body };
+    userData.password = undefined;
+    userData.role = undefined;
     const userId = req.user.id;
-    const user = await User.findOne({ username: bodyUser.username });
+    const user = await User.findOne({ username: userData.username });
     if (!user) return next(new Error('User not found'));
     if (
         user._id.toString() !== userId.toString() &&
@@ -51,7 +44,7 @@ const updateUserInfo = async (req, res, next) => {
     ) {
         return next(new Error('You are not allowed to edit this user'));
     }
-    const updatedUser = await User.findOneAndUpdate({}, bodyUser, {
+    const updatedUser = await User.findOneAndUpdate({}, userData, {
         new: true,
     });
     res.status(StatusCodes.OK).json({
@@ -90,7 +83,6 @@ const ratingUser = async (req, res, next) => {
     });
 };
 module.exports = {
-    // getAllUsers,
     getUserInfo,
     updateUserInfo,
     ratingUser,

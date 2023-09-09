@@ -55,15 +55,22 @@ const UserSchema = new mongoose.Schema(
         },
         gender: {
             type: String,
+            enum: ['male', 'female', 'other'],
         },
         address: {
-            type: [String],
+            detail: String,
+            ward: String,
+            district: String,
+            province: String,
         },
         phone: {
             type: String,
         },
         social: {
-            type: [String], //TODO: Change type from Array of String to Object
+            facebook: String,
+            instagram: String,
+            twitter: String,
+            github: String,
         },
     },
     { timestamps: true },
