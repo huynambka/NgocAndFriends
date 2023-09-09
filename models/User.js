@@ -23,20 +23,27 @@ const UserSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Please provide password'],
         },
-        refreshToken: {
+        rate: {
+            point: {
+                type: Number,
+                default: 0.0,
+            },
+            count: {
+                type: Number,
+                default: 0,
+            },
+        },
+        groups: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Group',
+            },
+        ],
+        refresh_token: {
             type: String,
         },
         socketId: {
             type: String,
-        },
-        groupIds: {
-            type: [
-                {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'GroupChat',
-                },
-            ],
-            default: [],
         },
         role: {
             type: String,
@@ -51,15 +58,22 @@ const UserSchema = new mongoose.Schema(
         },
         gender: {
             type: String,
+            enum: ['male', 'female', 'other'],
         },
         address: {
-            type: [String],
+            detail: String,
+            ward: String,
+            district: String,
+            province: String,
         },
         phone: {
             type: String,
         },
         social: {
-            type: [String],
+            facebook: String,
+            instagram: String,
+            twitter: String,
+            github: String,
         },
     },
     { timestamps: true },

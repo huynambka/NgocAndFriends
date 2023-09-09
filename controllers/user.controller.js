@@ -1,12 +1,7 @@
+const Group = require('../models/Group');
 const User = require('../models/User');
+const { StatusCodes } = require('http-status-codes');
 
-// const getAllUsers = async (req, res) => {
-//     // TODO: Pagination
-//     const users = await User.find({});
-//     if (!users) return next(new Error('No users found'));
-//     res.status(200).json({ count: users.length, users: users });
-// };
-// TODO: Fix this function
 const getUserInfo = async (req, res, next) => {
     const username = req.body.username;
     const userId = req.user.id;
@@ -17,22 +12,31 @@ const getUserInfo = async (req, res, next) => {
         user._id.toString() !== userId.toString() &&
         req.user.role !== 'admin'
     ) {
-        res.status(200).json({
-            username: user.username,
-            name: user.name,
-            social: user.social,
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Get user info successfully',
+            data: {
+                user: {
+                    username: user.username,
+                    name: user.name,
+                    social: user.social,
+                },
+            },
         });
     } else {
-        res.status(200).json({ user });
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Get user info successfully',
+            data: { user },
+        });
     }
 };
 const updateUserInfo = async (req, res, next) => {
-    const bodyUser = { ...req.body };
-    if (bodyUser.password) {
-        return next(new Error('You are not allowed to edit password'));
-    }
+    const userData = { ...req.body };
+    userData.password = undefined;
+    userData.role = undefined;
     const userId = req.user.id;
-    const user = await User.findOne({ username: bodyUser.username });
+    const user = await User.findOne({ username: userData.username });
     if (!user) return next(new Error('User not found'));
     if (
         user._id.toString() !== userId.toString() &&
@@ -40,14 +44,46 @@ const updateUserInfo = async (req, res, next) => {
     ) {
         return next(new Error('You are not allowed to edit this user'));
     }
-    const updatedUser = await User.findOneAndUpdate({}, bodyUser, {
+    const updatedUser = await User.findOneAndUpdate({}, userData, {
         new: true,
     });
-    res.status(200).json({ updatedUser });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'Update user info successfully',
+        data: { updatedUser },
+    });
 };
-
+const ratingUser = async (req, res, next) => {
+    const { userId, groupId, rating } = req.body;
+    const authorId = req.user.id;
+    const group = await Group.findById(groupId);
+    if (!group) {
+        return next(new Error('Group not exist'));
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+        return next(new Error('User not exist'));
+    }
+    if (authorId.toString() === userId.toString()) {
+        return next(new Error('You cannot rate yourself'));
+    }
+    if (!group.members.includes(userId)) {
+        return next(new Error('User not in this group'));
+    }
+    const { point, count } = user.rate;
+    const newPoint = (point * count + rating) / (count + 1);
+    const newRate = {
+        point: newPoint,
+        count: count + 1,
+    };
+    await user.updateOne({ $set: { rate: newRate } });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'Rating successfully',
+    });
+};
 module.exports = {
-    // getAllUsers,
     getUserInfo,
     updateUserInfo,
+    ratingUser,
 };

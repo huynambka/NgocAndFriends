@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { StatusCodes } = require('http-status-codes');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const register = async (req, res, next) => {
@@ -21,7 +22,13 @@ const register = async (req, res, next) => {
         return next(new Error('Something went wrong!'));
     }
     user.password = undefined;
-    res.status(201).json({ message: 'User created!', user: user });
+    res.status(StatusCodes.CREATED).json({
+        success: true,
+        message: 'User registered!',
+        data: {
+            user: user,
+        },
+    });
 };
 
 const login = async (req, res, next) => {
@@ -42,22 +49,24 @@ const login = async (req, res, next) => {
         { expiresIn: '7d' },
     );
     const user = await User.findByIdAndUpdate(existedUser._id, {
-        refreshToken: refreshToken,
+        refresh_token: refreshToken,
     });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: process.env.TOKEN_LIFETIME.toString(),
     });
     user.password = undefined;
-    res.status(200).json({
+    res.status(StatusCodes.ACCEPTED).json({
+        success: true,
         message: 'User logged in!',
-        token: token,
-        refreshToken: refreshToken,
-        userId: user._id,
-        username: user.username,
+        data: {
+            userId: user._id,
+            token: token,
+            refreshToken: refreshToken,
+        },
     });
 };
-// TODO: Refresh token
+
 const refreshToken = async (req, res, next) => {
     const refreshToken = req.body.refreshToken;
     const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
@@ -71,7 +80,13 @@ const refreshToken = async (req, res, next) => {
     const newToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
         expiresIn: process.env.TOKEN_LIFETIME,
     });
-    res.status(200).json({ message: 'Refresh token success', token: newToken });
+    res.status(StatusCodes.ACCEPTED).json({
+        success: true,
+        message: 'Refresh token success',
+        data: {
+            token: newToken,
+        },
+    });
 };
 module.exports = {
     register,

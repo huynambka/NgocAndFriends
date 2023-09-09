@@ -28,7 +28,6 @@ app.use(passport.initialize());
 app.use('/api/v1/user', router.userRoutes);
 app.use('/api/v1/post', router.postRoutes);
 app.use('/api/v1/auth', router.authRoutes);
-app.use('/api/v1/group-chat', router.groupChatRoutes);
 
 app.get('/chat', (req, res) => {
     res.sendFile(__dirname + '/public/chat.html');

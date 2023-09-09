@@ -6,10 +6,6 @@ const PostSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Please provide title'],
         },
-        content: {
-            type: String,
-            required: [true, 'Please provide description'],
-        },
         subject: {
             type: String,
             default: 'Other',
@@ -19,18 +15,32 @@ const PostSchema = new mongoose.Schema(
             ref: 'User',
             required: [true, 'Please provide author'],
         },
-        participants: {
-            type: [mongoose.Schema.Types.ObjectId],
-            ref: 'User',
+        max_participants: {
+            type: Number,
+            default: 5,
+        },
+        joined: {
+            type: Number,
+            default: 1,
+        },
+        group: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Group',
+        },
+        meetingTime: {
+            type: { start: Date, end: Date },
+            required: [true, 'Please provide meeting time'],
         },
         address: {
-            type: String,
-        },
-        date: {
-            type: Date,
+            detail: String,
+            ward: String,
+            district: String,
+            province: String,
         },
         status: {
             type: String,
+            default: 'open',
+            enum: ['open', 'closed'],
         },
     },
     {
