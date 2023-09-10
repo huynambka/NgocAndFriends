@@ -1,5 +1,7 @@
 const Group = require('../models/Group');
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+
 const { StatusCodes } = require('http-status-codes');
 
 const getUserInfo = async (req, res, next) => {
@@ -82,8 +84,25 @@ const ratingUser = async (req, res, next) => {
         message: 'Rating successfully',
     });
 };
+const changePassword = async (req, res, next) => {
+    const { password, newPassword } = req.body;
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    const matchPassword = await bcrypt.compare(password, user.password);
+    if (!matchPassword) {
+        return next(new Error('Wrong password'));
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    await user.updateOne({ $set: { password: hashedPassword } });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'Change password successfully',
+    });
+};
 module.exports = {
     getUserInfo,
     updateUserInfo,
+    changePassword,
     ratingUser,
 };

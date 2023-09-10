@@ -7,6 +7,7 @@ const passportJWT = passport.authenticate('jwt', { session: false }, null);
 
 router.get('/getInfo', passportJWT, userControllers.getUserInfo);
 router.put('/updateInfo', passportJWT, userControllers.updateUserInfo);
+router.post('/change-password', passportJWT, userControllers.changePassword);
 router.post('/rating', passportJWT, userControllers.ratingUser);
 router.get('/', (req, res) => {
     res.send('Hello User!');
