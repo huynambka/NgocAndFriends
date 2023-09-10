@@ -36,7 +36,6 @@ const login = async (req, res, next) => {
     console.log(username, password);
     // TODO: Validate user input
     const existedUser = await User.findOne({ username: username });
-    console.log(existedUser);
     if (!existedUser) {
         return next(new Error('Username does not exist!'));
     }

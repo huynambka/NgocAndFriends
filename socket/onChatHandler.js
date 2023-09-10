@@ -28,9 +28,9 @@ const onChatHandler = (socket, io, userId) => {
     socket.on('seen-message', async (data) => {
         const { groupId, timestamp } = data;
         const user = await User.findById(userId);
-        const seenMessages = user.seenMessages;
-        seenMessages.set(groupId, timestamp);
-        await User.findByIdAndUpdate(userId, { seenMessages: seenMessages });
+        const seenGroups = user.seenGroups;
+        seenGroups.set(groupId, timestamp);
+        await User.findByIdAndUpdate(userId, { seenGroups: seenGroups });
     });
 };
 

@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema(
                 ref: 'Group',
             },
         ],
-        seenMessages: [
+        seenGroups: [
             {
                 type: Map,
                 of: String,

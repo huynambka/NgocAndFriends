@@ -62,12 +62,17 @@ const deleteGroup = async (req, res, next) => {
     if (!group) {
         return next(new Error('Group does not exist'));
     }
-    if (group.leader !== userId && req.user.role !== 'admin') {
+    if (
+        group.leader.toString() !== userId.toString() &&
+        req.user.role !== 'admin'
+    ) {
         return next(new Error('You are not authorized to delete this post'));
     }
     await Group.findByIdAndDelete(groupId);
     group.members.forEach(async (member) => {
-        await User.findByIdAndUpdate(member, { $pull: { groups: groupId } });
+        const user = await User.findById(member);
+        user.seenGroups.delete(groupId);
+        user.updateOne({ $pull: { groups: groupId } }).exec(); // TODO: Testing user.seenGroups save changed
     });
     res.status(StatusCodes.OK).json({
         success: true,
@@ -121,11 +126,30 @@ const joinGroup = async (req, res, next) => {
         message: 'Join group successfully',
     });
 };
-
+const leaveGroup = async (req, res, next) => {
+    const { groupId } = req.body;
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    const group = await Group.findById(groupId);
+    if (!group) {
+        return next(new Error('Group does not exist'));
+    }
+    if (group.members.includes(userId) && user.groups.includes(groupId)) {
+        user.updateOne({ $pull: { groups: groupId } }).exec();
+        group.updateOne({ $pull: { members: userId } }).exec();
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'Leave group successfully',
+        });
+    } else {
+        return next(new Error('You are not in this group'));
+    }
+};
 module.exports = {
     createGroup,
     getAllGroups,
     deleteGroup,
     updateGroup,
     joinGroup,
+    leaveGroup,
 };
