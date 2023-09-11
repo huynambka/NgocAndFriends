@@ -1,14 +1,15 @@
 const Group = require('../models/Group');
 const User = require('../models/User');
 const Message = require('../models/Message');
+const { checkUserInput, sanitizeInput } = require('../utils/validateUserInput');
 const { StatusCodes } = require('http-status-codes');
 const createGroup = async (req, res, next) => {
-    const createGroup = req.body;
-    // TODO: Validate user input
+    const groupData = req.body;
+    const sanitizedGroupData = sanitizeInput(groupData);
     const leader = req.user.id;
-    createGroup.leader = leader;
-    createGroup.members = [leader];
-    let group = await Group.create(createGroup);
+    sanitizedGroupData.leader = leader;
+    sanitizedGroupData.members = [leader];
+    let group = await Group.create(sanitizedGroupData);
     if (!group) {
         return next(new Error('Something went wrong - Failed to create group'));
     }
@@ -58,6 +59,17 @@ const getAllGroups = async (req, res, next) => {
 };
 const deleteGroup = async (req, res, next) => {
     const { groupId } = req.body;
+    const checkResult = checkUserInput({ objectId: { groupId } });
+    if (!checkResult.valid) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Invalid user input',
+            data: {
+                checkResult,
+            },
+        });
+        return;
+    }
     const userId = req.user.id;
     const group = await Group.findById(groupId);
     if (!group) {
@@ -82,17 +94,33 @@ const deleteGroup = async (req, res, next) => {
 };
 const updateGroup = async (req, res, next) => {
     const { groupId, description, title, subject } = req.body;
+    const checkResult = checkUserInput({ objectId: { groupId } });
+    if (!checkResult.valid) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Invalid user input',
+            data: {
+                checkResult,
+            },
+        });
+        return;
+    }
+    const sanitizedData = sanitizeInput({
+        description,
+        title,
+        subject,
+    });
     const userId = req.user.id;
-    const group = await Post.findById(groupId);
+    const group = await Group.findById(groupId);
     if (!group) {
         return next(new Error('Group does not exist'));
     }
     if (group.leader !== userId && req.user.role !== 'admin') {
-        return next(new Error('You are not authorized to update this post'));
+        return next(new Error('You are not authorized to update this group'));
     }
     const updatedGroup = await Group.findByIdAndUpdate(
         { _id: groupId },
-        { description, title, subject },
+        { sanitizedData },
         { new: true },
     );
     res.status(StatusCodes.OK).json({
@@ -104,6 +132,17 @@ const updateGroup = async (req, res, next) => {
 
 const joinGroup = async (req, res, next) => {
     const { groupId } = req.body;
+    const checkResult = checkUserInput({ objectId: { groupId } });
+    if (!checkResult.valid) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Invalid user input',
+            data: {
+                checkResult,
+            },
+        });
+        return;
+    }
     const userId = req.user.id;
     const group = await Group.findById(groupId);
     if (!group) {
@@ -113,8 +152,8 @@ const joinGroup = async (req, res, next) => {
     if (members.includes(userId)) {
         return next(new Error('You have already joined this group'));
     }
-    if (post.max_participants >= post.joined + 1) {
-        await Group.findByIdAndUpdate(post.group, {
+    if (group.max_participants >= group.members.length + 1) {
+        await Group.findByIdAndUpdate(groupId, {
             $push: { members: userId },
         });
         await User.findByIdAndUpdate(userId, { $push: { groups: group._id } });
@@ -128,6 +167,17 @@ const joinGroup = async (req, res, next) => {
 };
 const leaveGroup = async (req, res, next) => {
     const { groupId } = req.body;
+    const checkResult = checkUserInput({ objectId: { groupId } });
+    if (!checkResult.valid) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Invalid user input',
+            data: {
+                checkResult,
+            },
+        });
+        return;
+    }
     const userId = req.user.id;
     const user = await User.findById(userId);
     const group = await Group.findById(groupId);
@@ -148,6 +198,17 @@ const leaveGroup = async (req, res, next) => {
 };
 const getMessages = async (req, res, next) => {
     const { groupId } = req.params;
+    const checkResult = checkUserInput({ objectId: { groupId } });
+    if (!checkResult.valid) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Invalid user input',
+            data: {
+                checkResult,
+            },
+        });
+        return;
+    }
     // Pagination
     const { page = 1, limit = 15 } = req.query;
     const startIndex = (page - 1) * limit;

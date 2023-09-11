@@ -2,10 +2,22 @@ const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const register = async (req, res, next) => {
-    const { username, email, name, password } = req.body; // TODO: Require age and address in future
-    // TODO: Validate user input
+const { checkUserInput, sanitizeInput } = require('../utils/validateUserInput');
 
+const register = async (req, res, next) => {
+    const { username, email, name, password } = req.body;
+    const checkResult = checkUserInput({ username, password, email });
+    if (!checkResult.valid) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Invalid user input',
+            data: {
+                checkResult,
+            },
+        });
+        return;
+    }
+    const sanitizedName = sanitizeInput({ name }).name;
     // Check if username or email exists
     const userExist = await User.findOne({
         $or: [{ username: username }, { email: email }],
@@ -15,7 +27,12 @@ const register = async (req, res, next) => {
     }
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = { username, email, name, password: hashedPassword };
+    const newUser = {
+        username,
+        email,
+        name: sanitizedName,
+        password: hashedPassword,
+    };
     // Create new user
     const user = await User.create(newUser);
     if (!user) {
@@ -33,8 +50,6 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     const { username, password } = req.body;
-    console.log(username, password);
-    // TODO: Validate user input
     const existedUser = await User.findOne({ username: username });
     if (!existedUser) {
         return next(new Error('Username does not exist!'));
