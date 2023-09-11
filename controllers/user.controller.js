@@ -3,6 +3,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 
 const { StatusCodes } = require('http-status-codes');
+const { sanitizeInput, checkUserInput } = require('../utils/validateUserInput');
 
 const getUserInfo = async (req, res, next) => {
     const username = req.body.username;
@@ -25,20 +26,20 @@ const getUserInfo = async (req, res, next) => {
                 },
             },
         });
+        return;
     } else {
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Get user info successfully',
             data: { user },
         });
+        return;
     }
 };
 const updateUserInfo = async (req, res, next) => {
     const userData = { ...req.body };
-    userData.password = undefined;
-    userData.role = undefined;
     const userId = req.user.id;
-    const user = await User.findOne({ username: userData.username });
+    const user = await User.findById(userId);
     if (!user) return next(new Error('User not found'));
     if (
         user._id.toString() !== userId.toString() &&
@@ -46,7 +47,19 @@ const updateUserInfo = async (req, res, next) => {
     ) {
         return next(new Error('You are not allowed to edit this user'));
     }
-    const updatedUser = await User.findOneAndUpdate({}, userData, {
+    const checkResult = checkUserInput({ email: userData['email'] });
+    if (!checkResult.valid) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Invalid user input',
+            data: {
+                checkResult,
+            },
+        });
+        return;
+    }
+    const sanitizedUserData = sanitizeInput(userData);
+    const updatedUser = await User.findOneAndUpdate({}, sanitizedUserData, {
         new: true,
     });
     res.status(StatusCodes.OK).json({
@@ -57,6 +70,20 @@ const updateUserInfo = async (req, res, next) => {
 };
 const ratingUser = async (req, res, next) => {
     const { userId, groupId, rating } = req.body;
+    if (typeof rating !== 'number' || rating < 0 || rating > 5) {
+        return next(new Error('Rate point must be a number and from 0 to 5'));
+    }
+    const checkResult = checkUserInput({ objectId: { groupId } });
+    if (!checkResult.valid) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Invalid user input',
+            data: {
+                checkResult,
+            },
+        });
+        return;
+    }
     const authorId = req.user.id;
     const group = await Group.findById(groupId);
     if (!group) {
@@ -71,6 +98,9 @@ const ratingUser = async (req, res, next) => {
     }
     if (!group.members.includes(userId)) {
         return next(new Error('User not in this group'));
+    }
+    if (!group.members.includes(authorId)) {
+        return next(new Error('You are not in this group'));
     }
     const { point, count } = user.rate;
     const newPoint = (point * count + rating) / (count + 1);
@@ -92,6 +122,17 @@ const changePassword = async (req, res, next) => {
     if (!matchPassword) {
         return next(new Error('Wrong password'));
     }
+    const checkResult = checkUserInput({ password: newPassword });
+    if (!checkResult.valid) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Invalid user input',
+            data: {
+                checkResult,
+            },
+        });
+        return;
+    }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
     await user.updateOne({ $set: { password: hashedPassword } });
@@ -102,6 +143,17 @@ const changePassword = async (req, res, next) => {
 };
 const checkSchedule = async (req, res, next) => {
     const { groupId } = req.body;
+    const checkResult = checkUserInput({ objectId: { groupId } });
+    if (!checkResult.valid) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: 'Invalid user input',
+            data: {
+                checkResult,
+            },
+        });
+        return;
+    }
     const group = await Group.findById(groupId);
     if (!group) {
         return next(new Error('Group does not exist'));
