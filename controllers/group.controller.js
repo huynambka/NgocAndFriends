@@ -1,5 +1,6 @@
 const Group = require('../models/Group');
 const User = require('../models/User');
+const Message = require('../models/Message');
 const { StatusCodes } = require('http-status-codes');
 const createGroup = async (req, res, next) => {
     const createGroup = req.body;
@@ -71,7 +72,7 @@ const deleteGroup = async (req, res, next) => {
     await Group.findByIdAndDelete(groupId);
     group.members.forEach(async (member) => {
         const user = await User.findById(member);
-        user.seenGroups.delete(groupId);
+        user.seenGroups.delete(groupId).save();
         user.updateOne({ $pull: { groups: groupId } }).exec(); // TODO: Testing user.seenGroups save changed
     });
     res.status(StatusCodes.OK).json({
@@ -136,6 +137,7 @@ const leaveGroup = async (req, res, next) => {
     if (group.members.includes(userId) && user.groups.includes(groupId)) {
         user.updateOne({ $pull: { groups: groupId } }).exec();
         group.updateOne({ $pull: { members: userId } }).exec();
+        user.seenGroups.delete(groupId).save();
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Leave group successfully',
@@ -144,6 +146,46 @@ const leaveGroup = async (req, res, next) => {
         return next(new Error('You are not in this group'));
     }
 };
+const getMessages = async (req, res, next) => {
+    const { groupId } = req.params;
+    // Pagination
+    const { page = 1, limit = 15 } = req.query;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const totalGroup = await Group.countDocuments();
+    if (!totalGroup) {
+        return next(new Error('There is no post'));
+    }
+    const pagination = {};
+    if (endIndex < totalGroup) {
+        pagination.next = {
+            page: page + 1,
+            limit: limit,
+        };
+    }
+    if (startIndex > 0) {
+        pagination.prev = {
+            page: page - 1,
+            limit: limit,
+        };
+    }
+
+    const messages = await Message.find({ groupId })
+        .sort({ createdAt: -1 })
+        .skip(startIndex)
+        .limit(limit)
+        .populate('sender', 'username')
+        .exec();
+    if (!messages) {
+        return next(new Error('Something went wrong - Failed to get messages'));
+    }
+    res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'Get messages successfully',
+        data: { groupId, messages, pagination },
+    });
+};
 module.exports = {
     createGroup,
     getAllGroups,
@@ -151,4 +193,5 @@ module.exports = {
     updateGroup,
     joinGroup,
     leaveGroup,
+    getMessages,
 };
