@@ -100,9 +100,38 @@ const changePassword = async (req, res, next) => {
         message: 'Change password successfully',
     });
 };
+const checkSchedule = async (req, res, next) => {
+    const { groupId } = req.body;
+    const group = await Group.findById(groupId);
+    if (!group) {
+        return next(new Error('Group does not exist'));
+    }
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    const groups = user.groups;
+    for (let i = 0; i < groups.length; i++) {
+        if (
+            groups[i].meetingTime.start <= group.meetingTime.end &&
+            groups[i].meetingTime.end > group.meetingTime.start
+        ) {
+            res.status(StatusCodes.OK).json({
+                success: true,
+                message: 'You have a schedule at this time',
+                data: { conflict: true, conflictGroup: groups[i] },
+            });
+            return;
+        }
+    }
+    res.status(StatusCodes.OK).json({
+        success: true,
+        message: 'You have no schedule at this time',
+        data: { conflict: false },
+    });
+};
 module.exports = {
     getUserInfo,
     updateUserInfo,
     changePassword,
     ratingUser,
+    checkSchedule,
 };

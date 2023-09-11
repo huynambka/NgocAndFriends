@@ -34,8 +34,14 @@ const GroupSchema = new mongoose.Schema(
             },
         ],
         meetingTime: {
-            type: { start: Date, end: Date },
-            required: [true, 'Please provide meeting time'],
+            start: {
+                type: Date,
+                required: [true, 'Please provide start time'],
+            },
+            end: {
+                type: Date,
+                required: [true, 'Please provide end time'],
+            },
         },
         address: {
             detail: String,

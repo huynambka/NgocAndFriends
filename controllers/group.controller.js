@@ -113,7 +113,6 @@ const joinGroup = async (req, res, next) => {
         return next(new Error('You have already joined this group'));
     }
     if (post.max_participants >= post.joined + 1) {
-        // TODO: Check for user's schedule
         await Group.findByIdAndUpdate(post.group, {
             $push: { members: userId },
         });
