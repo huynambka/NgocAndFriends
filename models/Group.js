@@ -34,13 +34,20 @@ const GroupSchema = new mongoose.Schema(
             },
         ],
         meetingTime: {
+            days: {
+                type: [String],
+                required: [true, 'Please provide day'],
+                enum: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
+            },
             start: {
-                type: Date,
+                type: Number, // hour
                 required: [true, 'Please provide start time'],
             },
-            end: {
-                type: Date,
-                required: [true, 'Please provide end time'],
+            last: {
+                type: Number,
+                required: [true, 'Please provide last time'],
+                min: 10, // in minutes
+                max: 240, // in minutes
             },
         },
         address: {
@@ -52,6 +59,8 @@ const GroupSchema = new mongoose.Schema(
     },
     { timestamps: true },
 );
+
+GroupSchema.index({ subject: 'text' });
 
 const Group = mongoose.model('Group', GroupSchema);
 

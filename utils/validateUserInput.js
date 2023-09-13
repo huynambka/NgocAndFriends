@@ -120,6 +120,7 @@ const isValid = (input, category) => {
 const sanitizeInput = (input) => {
     const encode = (data) => {
         data.trim().replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return data;
     };
     const keys = Object.keys(input);
     keys.forEach((key) => {

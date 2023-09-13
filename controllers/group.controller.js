@@ -2,9 +2,17 @@ const Group = require('../models/Group');
 const User = require('../models/User');
 const Message = require('../models/Message');
 const { checkUserInput, sanitizeInput } = require('../utils/validateUserInput');
+const checkSchedule = require('../utils/checkUserSchedule');
 const { StatusCodes } = require('http-status-codes');
 const createGroup = async (req, res, next) => {
     const groupData = req.body;
+    if (groupData.meetingTime) {
+        if (!checkSchedule(req.user.id, groupData.meetingTime)) {
+            return next(
+                new Error('You have already joined a group at this time'),
+            );
+        }
+    }
     const sanitizedGroupData = sanitizeInput(groupData);
     const leader = req.user.id;
     sanitizedGroupData.leader = leader;
@@ -20,8 +28,8 @@ const createGroup = async (req, res, next) => {
         data: { group },
     });
 };
-const getAllGroups = async (req, res, next) => {
-    const { page = 1, limit = 5 } = req.query;
+const getGroups = async (req, res, next) => {
+    const { page = 1, limit = 5, filter = '' } = req.query;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
@@ -42,12 +50,23 @@ const getAllGroups = async (req, res, next) => {
             limit: limit,
         };
     }
-
-    const groups = await Group.find({})
-        .skip(startIndex)
-        .limit(limit)
-        .populate('leader', 'username')
-        .sort({ createdAt: -1 });
+    let groups;
+    if (filter) {
+        groups = await Group.find(
+            { $text: { $search: filter } },
+            { score: { $meta: 'textScore' } },
+        )
+            .skip(startIndex)
+            .limit(limit)
+            .populate('leader', 'username')
+            .sort({ createdAt: -1 });
+    } else {
+        groups = await Group.find({})
+            .skip(startIndex)
+            .limit(limit)
+            .populate('leader', 'username')
+            .sort({ createdAt: -1 });
+    }
     if (!groups) {
         return next(new Error('Something went wrong - Failed to get groups'));
     }
@@ -145,6 +164,9 @@ const joinGroup = async (req, res, next) => {
     }
     const userId = req.user.id;
     const group = await Group.findById(groupId);
+    if (!checkSchedule(userId, group.meetingTime)) {
+        return next(new Error('You have already joined a group at this time'));
+    }
     if (!group) {
         return next(new Error('Group does not exist'));
     }
@@ -249,7 +271,7 @@ const getMessages = async (req, res, next) => {
 };
 module.exports = {
     createGroup,
-    getAllGroups,
+    getGroups,
     deleteGroup,
     updateGroup,
     joinGroup,
