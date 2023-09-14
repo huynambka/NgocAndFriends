@@ -38,8 +38,9 @@ const getUserInfo = async (req, res, next) => {
 };
 const updateUserInfo = async (req, res, next) => {
     const userData = { ...req.body };
+    const username = userData.username;
     const userId = req.user.id;
-    const user = await User.findById(userId);
+    const user = await User.findOne({ username });
     if (!user) return next(new Error('User not found'));
     if (
         user._id.toString() !== userId.toString() &&
