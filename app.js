@@ -38,7 +38,7 @@ app.use('/api/group', router.groupRoutes);
 app.use('/api/auth', router.authRoutes);
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/home.html');
+    res.send("Hello, this is the server for the 'NnFs' project.");
 });
 const socketHandler = require('./socket/socketHandler');
 socketHandler(io);
