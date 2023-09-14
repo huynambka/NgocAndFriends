@@ -38,16 +38,8 @@ const getUserInfo = async (req, res, next) => {
 };
 const updateUserInfo = async (req, res, next) => {
     const userData = { ...req.body };
-    const username = userData.username;
+    console.log('Triggered');
     const userId = req.user.id;
-    const user = await User.findOne({ username });
-    if (!user) return next(new Error('User not found'));
-    if (
-        user._id.toString() !== userId.toString() &&
-        req.user.role !== 'admin'
-    ) {
-        return next(new Error('You are not allowed to edit this user'));
-    }
     const checkResult = checkUserInput({ email: userData['email'] });
     if (!checkResult.valid) {
         res.status(StatusCodes.BAD_REQUEST).json({
@@ -60,9 +52,13 @@ const updateUserInfo = async (req, res, next) => {
         return;
     }
     const sanitizedUserData = sanitizeInput(userData);
-    const updatedUser = await User.findOneAndUpdate({}, sanitizedUserData, {
-        new: true,
-    });
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        sanitizedUserData,
+        {
+            new: true,
+        },
+    );
     res.status(StatusCodes.OK).json({
         success: true,
         message: 'Update user info successfully',
