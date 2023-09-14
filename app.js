@@ -37,7 +37,7 @@ app.use('/api/group', router.groupRoutes);
 app.use('/api/auth', router.authRoutes);
 
 app.get('/api-docs', (req, res) => {
-    res.download(__dirname + '/postman_collection.json');
+    res.download(__dirname + '/NNFS.postman_collection.json');
 });
 
 app.get('/', (req, res) => {
