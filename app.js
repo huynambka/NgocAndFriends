@@ -33,9 +33,9 @@ const errorHandler = require('./middlewares/errorHandler');
 
 app.use(passport.initialize());
 
-app.use('/api/v1/user', router.userRoutes);
-app.use('/api/v1/group', router.groupRoutes);
-app.use('/api/v1/auth', router.authRoutes);
+app.use('/api/user', router.userRoutes);
+app.use('/api/group', router.groupRoutes);
+app.use('/api/auth', router.authRoutes);
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/home.html');
