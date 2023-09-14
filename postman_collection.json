@@ -1,0 +1,405 @@
+{
+    "info": {
+        "_postman_id": "e8e1f9ed-e404-487d-811e-773b4ee21c8e",
+        "name": "N&FS API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "26462223"
+    },
+    "item": [
+        {
+            "name": "Register User",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"username\": \"guest_user_2\",\n    \"name\": \"Guest>\",\n    \"email\": \"guest2@gmail.com\",\n    \"password\": \"Password1\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/auth/register",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["auth", "register"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Login",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const jsonData = pm.response.json();",
+                            "pm.globals.set(\"accessToken\", jsonData.data.token);"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"username\": \"guest_user\",\n    \"password\": \"Password1\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/auth/login",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["auth", "login"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Refresh Token",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "const jsonData = pm.response.json();",
+                            "pm.globals.set(\"accessToken\", jsonData.data.token);"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZjM0ZDk0ZmEwZDYzOWM1YTM2Mjc2YyIsImlhdCI6MTY5MzY2NzgzNSwiZXhwIjoxNjk0MjcyNjM1fQ.76pOrNWyjuQcU598i6P8rUYeT1r8k9d21gKDoSSDDR8\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/auth/refresh-token",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["auth", "refresh-token"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get User Info",
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"username\": \"huynambka\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/user/getInfo",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["user", "getInfo"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update User Info",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "PUT",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"username\": \"huynambka\",\n    \"social\": [\"facebook\", \"www.facebook.com/tl.hnam\", \"instagram\", \"tl.hnam\"]\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/user/updateInfo",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["user", "updateInfo"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Rating User",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"userId\": \"64fdf4c344d06bb0663c2e09\",\n    \"groupId\": \"64fdf744f3741a15c650365e\",\n    \"rating\": 5\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/user/rating",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["user", "rating"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Create Group",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"title\": \"I want find someone to study Science with me\",\n    \"description\": \"Bla bla\",\n    \"subject\": \"Science\",\n    \"meetingTime\": {\n        \"days\": [\"mon\", \"tue\"],\n        \"start\": 19,\n        \"last\": 20\n    }\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/create",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["group", "create"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Groups",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/groups",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["group", "groups"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Group",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"groupId\": \"64fdf6d3a56792791db5306f\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/delete",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["group", "delete"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Group",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "PUT",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"groupId\": \"64fdf744f3741a15c650365e\",\n    \"title\": \"This post was updated first times\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/update",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["group", "update"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Join Group",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"groupId\": \"650202d1ac174e25a8f886f4\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/join",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["group", "join"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Leave Group",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"groupId\": \"64fdf52944d06bb0663c2e11\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/leave",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["group", "leave"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Group's Messages",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/messages/64fdf744f3741a15c650365e",
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "path": ["group", "messages", "64fdf744f3741a15c650365e"]
+                }
+            },
+            "response": []
+        }
+    ]
+}

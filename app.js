@@ -4,7 +4,6 @@ const express = require('express');
 const { Server } = require('socket.io');
 const http = require('http');
 const cors = require('cors');
-
 const app = express();
 const server = http.createServer(app);
 
@@ -37,8 +36,15 @@ app.use('/api/user', router.userRoutes);
 app.use('/api/group', router.groupRoutes);
 app.use('/api/auth', router.authRoutes);
 
+app.get('/api-docs', (req, res) => {
+    res.download(__dirname + '/postman_collection.json');
+});
+
 app.get('/', (req, res) => {
-    res.send("Hello, this is the server for the 'NnFs' project.");
+    res.send(
+        '<h1 style="text-align: center">Hello, this is the server for the NnFs project.</h1>' +
+            '<h2 style="text-align: center"><a href="/api-docs">API Documentations</a></h2>',
+    );
 });
 const socketHandler = require('./socket/socketHandler');
 socketHandler(io);
