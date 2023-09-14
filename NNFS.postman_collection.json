@@ -24,7 +24,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/auth/register",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["auth", "register"]
                 },
                 "description": "Register new user"
@@ -59,7 +59,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/auth/login",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["auth", "login"]
                 },
                 "description": "Login user"
@@ -94,7 +94,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/auth/refresh-token",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["auth", "refresh-token"]
                 },
                 "description": "Refresh JWT Token"
@@ -130,7 +130,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/user/getInfo",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["user", "getInfo"]
                 }
             },
@@ -162,7 +162,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/user/updateInfo",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["user", "updateInfo"]
                 }
             },
@@ -194,7 +194,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/user/rating",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["user", "rating"]
                 }
             },
@@ -226,7 +226,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/create",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["group", "create"]
                 }
             },
@@ -249,7 +249,7 @@
                 "header": [],
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/groups",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["group", "groups"]
                 }
             },
@@ -281,7 +281,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/delete",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["group", "delete"]
                 }
             },
@@ -313,7 +313,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/update",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["group", "update"]
                 }
             },
@@ -345,7 +345,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/join",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["group", "join"]
                 }
             },
@@ -377,7 +377,7 @@
                 },
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/leave",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["group", "leave"]
                 }
             },
@@ -400,7 +400,7 @@
                 "header": [],
                 "url": {
                     "raw": "https://nnfs-dff4e9d4c13a.herokuapp.com/api/group/messages/64fdf744f3741a15c650365e",
-                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com/api"],
+                    "host": ["https://nnfs-dff4e9d4c13a.herokuapp.com"],
                     "path": ["group", "messages", "64fdf744f3741a15c650365e"]
                 }
             },
