@@ -98,7 +98,7 @@ const deleteGroup = async (req, res, next) => {
         group.leader.toString() !== userId.toString() &&
         req.user.role !== 'admin'
     ) {
-        return next(new Error('You are not authorized to delete this post'));
+        return next(new Error('You are not authorized to delete this group'));
     }
     await Group.findByIdAndDelete(groupId);
     group.members.forEach(async (member) => {
@@ -134,7 +134,10 @@ const updateGroup = async (req, res, next) => {
     if (!group) {
         return next(new Error('Group does not exist'));
     }
-    if (group.leader !== userId && req.user.role !== 'admin') {
+    if (
+        group.leader.toString() !== userId.toString() &&
+        req.user.role !== 'admin'
+    ) {
         return next(new Error('You are not authorized to update this group'));
     }
     const updatedGroup = await Group.findByIdAndUpdate(

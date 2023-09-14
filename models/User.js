@@ -39,12 +39,10 @@ const UserSchema = new mongoose.Schema(
                 ref: 'Group',
             },
         ],
-        seenGroups: [
-            {
-                type: Map,
-                of: String,
-            },
-        ],
+        seenGroups: {
+            type: Map,
+            of: String,
+        },
         refresh_token: {
             type: String,
         },
